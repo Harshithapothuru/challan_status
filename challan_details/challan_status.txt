@@ -1,0 +1,38 @@
+create or replace procedure challan_bill_proc(p_usn_number number,
+				       p_customer_name out varchar2,
+				       p_amount out number,
+				       p_msg out varchar2) 
+As 
+	L_count number;
+Begin
+	select count(*)
+	   into L_count
+	from challan_bill
+	where usn_number=p_usn_number;
+	IF L_count=0 THEN
+		p_msg:='Invalid USNNumber';
+	ELSEIF L_count=1 THEN
+		select customer_name,amount
+		  into p_customer,p_amount 
+		    from challan_bill 
+		     where usn_number=p_usn_number 
+		      AND payment_status='N';
+		p_msg:='Pending due details';
+	END IF;
+Exception
+	when NO_DATA_FOUND then
+	   p_msg:='NO pending dues are there';
+End challan_bill_proc;
+
+
+
+--procedure execution
+DECLARE
+name varchar2(100);
+amt number;
+msg varchar2(100);
+BEGIN
+challan_bill_proc(5234,name,amt,msg);
+dbms_output.put_line(NAME||':'||AMT);
+dbms_output.put_line(msg);
+END;
