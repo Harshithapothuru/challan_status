@@ -13,7 +13,7 @@ Begin
 		p_msg:='Invalid USNNumber';
 	ELSEIF L_count=1 THEN
 		select customer_name,amount
-		  into p_customer,p_amount 
+		  into p_customer_name,p_amount 
 		    from challan_bill 
 		     where usn_number=p_usn_number 
 		      AND payment_status='N';
@@ -23,6 +23,7 @@ Exception
 	when NO_DATA_FOUND then
 	   p_msg:='NO pending dues are there';
 End challan_bill_proc;
+/
 
 
 
@@ -33,6 +34,6 @@ amt number;
 msg varchar2(100);
 BEGIN
 challan_bill_proc(5234,name,amt,msg);
-dbms_output.put_line(NAME||':'||AMT);
+dbms_output.put_line(name||':'||amt);
 dbms_output.put_line(msg);
 END;
